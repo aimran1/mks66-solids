@@ -3,7 +3,52 @@ from matrix import *
 from gmath import *
 
 def scanline_convert(polygons, i, screen, zbuffer ):
-    pass
+    bot = polygons[i]
+    mid = polygons[i+1]
+    top = polygons[i+2]
+
+    if bot[1] < mid[1]:
+        temp = bot
+        bot = mid
+        mid = temp
+    if bot[1] > top[1]:
+        temp = bot
+        bot = top
+        top = temp
+    if mid[1] < top[1]:
+        temp = mid
+        mid = top
+        top = temp
+
+    xslope=(top[0]-bot[0])/(top[1]-bot[1])
+    zslope=(top[2]-bot[2])/(top[1]-bot[1])
+
+    y = int(bot[1])
+    x0 = bot[0]
+    z0 = bot[2]
+    x1 = bot[0]
+    z1 = bot[2]
+    while y < int(mid[1]):
+        y+=1
+        draw_line(int(x0),int(y),int(z0),int(x1),int(y),int(z1),screen,zbuffer,color)
+        nextx = (mid[0]-bot[0])/(mid[1]-bot[1])
+        nextz = (mid[2]-bot[2])/(mid[1]-bot[1])
+        x0 += xslope
+        z0 += zslope
+        x1 += nextx
+        z1 += nextz
+    y = int(mid[1])
+    x1 = mid[0]
+    z1 = mid[2]
+    while y < int(top[1]):
+        y += 1
+        draw_line(int(x0),int(y),int(z0),int(x1),int(y),int(z1),screen,zbuffer,color)
+        nextx = (top[0]-mid[0])/(top[1]-mid[1])
+        nextz = (top[2]-mid[2])/(top[1]-mid[1])
+        x0 += xslope
+        z0 += zslope
+        x1 += nextx
+        z1 += nextz
 
 def add_polygon( polygons, x0, y0, z0, x1, y1, z1, x2, y2, z2 ):
     add_point(polygons, x0, y0, z0)
