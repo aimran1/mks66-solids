@@ -1,13 +1,14 @@
 from display import *
 from matrix import *
 from gmath import *
+import random
 
 def scanline_convert(polygons, i, screen, zbuffer ):
     bot = polygons[i]
     mid = polygons[i+1]
     top = polygons[i+2]
 
-    if bot[1] < mid[1]:
+    if bot[1] > mid[1]:
         temp = bot
         bot = mid
         mid = temp
@@ -15,13 +16,15 @@ def scanline_convert(polygons, i, screen, zbuffer ):
         temp = bot
         bot = top
         top = temp
-    if mid[1] < top[1]:
+    if mid[1] > top[1]:
         temp = mid
         mid = top
         top = temp
 
-    xslope=(top[0]-bot[0])/(top[1]-bot[1])
-    zslope=(top[2]-bot[2])/(top[1]-bot[1])
+    color = [random.randint(0,255),random.randint(0,255),random.randint(0,255)]
+
+    xslope = (top[0]-bot[0])/(top[1]-bot[1])
+    zslope = (top[2]-bot[2])/(top[1]-bot[1])
 
     y = int(bot[1])
     x0 = bot[0]
